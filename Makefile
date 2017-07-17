@@ -3,3 +3,6 @@ all:
 
 clean:
 	rm -f *.o *.so
+
+publish:
+	python setup.py sdist upload -r pypi
