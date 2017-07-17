@@ -21,9 +21,10 @@ PyMODINIT_FUNC initbfurlparser(void)
 
 static PyObject *bfurlparser_urlparse(PyObject *self, PyObject *args)
 {
+
     char
-        *url = NULL,
-        *p = NULL,
+        *url  = NULL,
+        *p    = NULL,
         *prev,
         prevChr;
 
@@ -40,7 +41,7 @@ static PyObject *bfurlparser_urlparse(PyObject *self, PyObject *args)
         *strQuery = NULL,
         *strFrag  = NULL;
 
-    /* Parse the input tuple */
+    // Parse the input tuple
     if (!PyArg_ParseTuple(args, "s", &url))
         return NULL;
 
@@ -132,7 +133,7 @@ static PyObject *bfurlparser_urlparse(PyObject *self, PyObject *args)
         strFrag = PyString_FromString("");
 
 
-    /* Build the output tuple */
+    // Build the return value
     PyObject *ret = Py_BuildValue(
         "{s:s,s:s,s:s,s:s,s:s,s:s}",
         "proto",    PyString_AS_STRING(strProto),
@@ -142,6 +143,15 @@ static PyObject *bfurlparser_urlparse(PyObject *self, PyObject *args)
         "query",    PyString_AS_STRING(strQuery),
         "fragment", PyString_AS_STRING(strFrag)
     );
+
+    // Decrement the refcount on them all
+    Py_DECREF(strProto);
+    Py_DECREF(strHost);
+    Py_DECREF(strPort);
+    Py_DECREF(strPath);
+    Py_DECREF(strQuery);
+    Py_DECREF(strFrag);
+
     return ret;
 }
 
