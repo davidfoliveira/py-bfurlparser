@@ -1,14 +1,18 @@
 from distutils.core import setup, Extension
 
 # Read the long decription
-readme_text = None
-with open("README.rst", "r") as r:
-    readme_text = r.read()
+readme_text = 'The fastest URL parser, ever'
+try:
+    with open("README.rst", "r") as r:
+        readme_text = r.read()
+except Exception:
+    pass
+
 
 # Setup
 setup(
     name='bfurlparser',
-    version='1.0.3',
+    version='1.0.4',
     description='A blazing fast Python URL parser',
     long_description=readme_text,
     url='https://github.com/davidfoliveira/py-bfurlparser',
