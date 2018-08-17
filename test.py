@@ -28,13 +28,8 @@ def parse_url_bf(url):
     )
 
 def fetch_url_parts_bf(url):
-#    print ""    
-#    print url
     # support quoted urls as inputs
-    try:
-        (protocol, host, port, path, get, fragment) = parse_url_bf(url)
-    except NoMatches:
-        (protocol, host, port, path, get, fragment) = parse_url_bf(unquote(url))
+    (protocol, host, port, path, get, fragment) = parse_url_bf(url)
     return (protocol, host, port, path, get, fragment)
 
 print fetch_url_parts_bf("https://")

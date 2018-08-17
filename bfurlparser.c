@@ -31,7 +31,8 @@ static PyObject *bfurlparser_urlparse(PyObject *self, PyObject *args)
     int
         hasPort   = 0,
         hasQuery  = 0,
-        hasFrag   = 0;
+        hasFrag   = 0,
+        invPort   = 0;
 
     PyObject
         *strProto = NULL,
@@ -78,8 +79,14 @@ static PyObject *bfurlparser_urlparse(PyObject *self, PyObject *args)
 
     // Locate the port end
     if ( hasPort ) {
-        prev = p;
-        for ( ; *p && *p != '/' && *p != '#'; p++ );
+        prev = ++p;
+        for ( ; *p && *p != '/' && *p != '#'; p++ ) {
+            if ( *p < '0' || *p > '9' ) {
+                Py_DECREF(strProto);
+                Py_DECREF(strHost);
+                return NULL;
+            }
+        }
         prevChr = *p;
         *p = 0;
         strPort = PyString_FromString(prev);
@@ -96,10 +103,12 @@ static PyObject *bfurlparser_urlparse(PyObject *self, PyObject *args)
             hasQuery = 1;
             break;
         }
+#ifndef BFURLPARSER_FRAG_AS_PATH
         else if ( *p == '#' ) {
             hasFrag = 1;
             break;
         }
+#endif
     }
     prevChr = *p;
     *p = 0;
@@ -131,7 +140,6 @@ static PyObject *bfurlparser_urlparse(PyObject *self, PyObject *args)
     }
     else
         strFrag = PyString_FromString("");
-
 
     // Build the return value
     PyObject *ret = Py_BuildValue(
